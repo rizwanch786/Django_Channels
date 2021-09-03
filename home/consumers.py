@@ -27,3 +27,27 @@ class TestConsumer(WebsocketConsumer):
         data = json.loads(event['value'])
         self.send(text_data=json.dumps({'payload': data}))
         print('send_notification')
+
+from channels.generic.websocket import AsyncJsonWebsocketConsumer
+class NewConsumer(AsyncJsonWebsocketConsumer):
+    async def connect(self):
+        self.room_name = 'new_consumer'
+        self.room_group_name = 'new_consumer_group'
+
+        await(self.channel_layer.group_add)(
+            self.room_group_name,
+            self.channel_name
+        )
+
+        await self.accept()
+        await self.send(text_data=json.dumps({'ststus' : 'Connected fron new async json consumer'}))
+    
+    async def receive(self, text_data):
+        await self.send(text_data=json.dumps({'status': 'We got this'}))
+    
+    async def disconnect(self, *args, **kwargs):
+        await print('Disconected')
+
+    async def send_notification(self, event):
+        data = json.loads(event['value'])
+        await self.send(text_data=json.dumps({'payload': data}))

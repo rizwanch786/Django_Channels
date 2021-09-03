@@ -6,12 +6,12 @@ from channels.layers import  get_channel_layer
 import json
 
 # Create your views here.
-def home(request):
+async def home(request):
     for i in range(1,10):
         channel_layer = get_channel_layer()
         data = {'count': i}
-        async_to_sync(channel_layer.group_send)(
-            'test_consumer_group', {
+        await (channel_layer.group_send)(
+            'new_consumer_group', {
                 'type' : 'send_notification',
                 'value' : json.dumps(data)
             })

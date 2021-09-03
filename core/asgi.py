@@ -20,7 +20,8 @@ application = get_asgi_application()
 
 from django.urls import path
 ws_patterns = [
-    path('ws/test/', TestConsumer.as_asgi())
+    path('ws/test/', TestConsumer.as_asgi()),
+    path('ws/new/', NewConsumer.as_asgi()),
 ]
 
 application = ProtocolTypeRouter({
