@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+
+  <title>Hello, world!</title>
+</head>
+
+<body>
+
+
+  <div class="container mt-5 pt-5">
+    <p>Percentage completed : <span id="completed"></span></p>
+    <div class="progress">
+      <div class="progress-bar bg-success progress-bar-striped" role="progressbar" style="width: 0%;" aria-valuenow="25" aria-valuemin="0"
+        aria-valuemax="100"></div>
+    </div>
+  </div>
+
+  <table class="table container mt-5 pt-5">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Address</th>
+        <th scope="col">Age</th>
+      </tr>
+    </thead>
+    <tbody id="table_data">
+      
+    </tbody>
+  </table>
+  <script>
+    var url = 'ws://localhost:8000/ws/new/'
+    var socket = new WebSocket(url);
+    socket.onopen = function(e){
+      console.log('socket connected')
+    }
+    socket.onmessage = function(e){
+      var data = JSON.parse(e.data);
+      // console.log(data)
+      increseProgress(data.payload.total, data.payload.current_total)
+      if (data.payload){
+        addData(data.payload)
+      }
+    }
+    socket.onclose = function(e){
+      console.log('Socket Disconnected')
+    }
+
+    function addData(data){
+      console.log(data);
+
+      var html = `<tr>
+      <th>${data.current_total}</th>
+      <td>${data.student_name}</td>
+      <td>${data.student_email}</td>
+      <td>${data.address}</td>
+      <td>${data.age}</td> 
+      </tr>
+      
+      `
+        document.getElementById('table_data').innerHTML += html
+    }
+
+    function increseProgress(total, current_total){
+      var element = document.querySelector('.progress-bar')
+      var percent = parseInt((current_total / total) * 100)
+      document.getElementById('completed').innerHTML = percent + '%'
+      element.style.width = percent + "%"
+    }
+  </script>
+
+
+
+
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+    crossorigin="anonymous"></script>
+
+  <!-- Option 2: Separate Popper and Bootstrap JS -->
+  <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
+    -->
+</body>
+
+</html>
