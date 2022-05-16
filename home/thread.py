@@ -17,9 +17,7 @@ class CreateStudentThread(threading.Thread):
         try:
             print('Thread Execution Start')
             channel_layer = get_channel_layer()
-            current_total = 0
-            for i in range(self.total):
-                current_total += 1
+            for current_total, _ in enumerate(range(self.total), start=1):
                 student_obj = Student.objects.create(
                     student_name = fake.name(),
                     student_email = fake.email(),
